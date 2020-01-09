@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Salientype/clubhost#readme",
   "dependencies": {
+    "bcrypt": "^3.0.7",
+    "ejs": "^3.0.1",
     "express": "^4.17.1",
     "pg": "^7.17.0",
     "pg-hstore": "^2.3.3",
