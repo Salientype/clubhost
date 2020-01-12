@@ -1,9 +1,11 @@
+require('dotenv').config();
+
 const config = {
     host: 'localhost',
     port: 5432,
     database: 'clubhost',
     username: 'postgres',
-    password: '',
+    password: DB_PASS,
 };
 
 var express = require('express');
