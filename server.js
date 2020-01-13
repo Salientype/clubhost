@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const config = {
     host: 'localhost',
     port: 5432,
