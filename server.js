@@ -72,5 +72,51 @@ app.post('/api/groups', function (req, res) {
     })
 });
 
+app.post('/api/login', function (req, res) {
+    let email = req.body.email.toLowerCase().trim();
+    let password = req.body.password;
+    if (email && password) {
+        Users.findOne({
+            where: {
+                email: email
+            },
+        }).then((results) => {
+            bcrypt.compare(password, results.password).then(function(matched) {
+                if (matched) {
+                  req.session.user = results.id;
+                  req.session.name = results.name;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify(results));
+                } else {
+                    res.status(434).send('Email/Password combination did not match')
+                }
+            });
+        }).catch((e) => {
+            res.status(434).send('Email does not exist in the database')
+        });
+    } else {
+        res.status(434).send('Both email and password is required to login')
+    }
+  });
+  app.post('/api/register', function (req, res) {
+    console.log(req.body.email);
+  let data = {
+      name: req.body.name,
+      email: req.body.email.toLowerCase().trim(),
+      password: req.body.password
+  };
+  if (data.name && data.email && data.password) {
+      var salt = bcrypt.genSaltSync(10);
+      var hash = bcrypt.hashSync(data.password, salt);
+      data['password'] = hash;
+      Users.create(data).then(function (user) {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(user));
+      });;
+  } else {
+      res.status(434).send('Name, email and password is required to register')
+  }
+});
+
 app.listen(3000);
 console.log('Clubs are listening');
