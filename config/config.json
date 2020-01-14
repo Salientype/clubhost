@@ -1,7 +1,7 @@
 {
   "development": {
     "username": "postgres",
-    "password": null,
+    "password": "DB_PASS",
     "database": "clubhost",
     "host": "127.0.0.1",
     "dialect": "postgres",
