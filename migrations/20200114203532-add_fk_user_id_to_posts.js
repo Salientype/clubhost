@@ -4,7 +4,7 @@ module.exports = {
   up: (queryInterface, Sequelize) => {
     return queryInterface.addConstraint('posts', ['user_id'], {
       type: 'foreign key',
-      name: 'user_id',
+      name: 'user_id_fk',
       references: { //Required field
         table: 'users',
         field: 'id'
@@ -17,7 +17,7 @@ module.exports = {
   down: (queryInterface, Sequelize) => {
     return queryInterface.removeConstraint('posts', ['user_id'], {
       type: 'foreign key',
-      name: 'user_id',
+      name: 'user_id_fk',
       references: { //Required field
         table: 'users',
         field: 'id'
