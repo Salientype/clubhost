@@ -46,7 +46,15 @@ app.set('view engine', 'ejs');
 
 
 app.get('/groups', function(req, res) {
-    res.render('pages/groups');
+    const groups = Groups.findAll().then((results) => {
+        res.render('pages/groups', { groups: results });
+    }).catch(function(e) {
+        return 'no results'
+    })
+});
+
+app.get('/create_group', function(req, res) {
+    res.render('pages/create_group');
 });
 
 app.get('/api/groups', function (req, res) {
@@ -63,6 +71,7 @@ app.post('/api/groups', function (req, res) {
     let data = {
         name: req.body.name,
         description: req.body.description,
+        image: req.body.image
     };
     Groups.create(data).then(function (group) {
         res.setHeader('Content-Type', 'application/json');
@@ -71,6 +80,7 @@ app.post('/api/groups', function (req, res) {
         res.status(434).send('unable to create group')
     })
 });
+
 
 app.listen(3000);
 console.log('Clubs are listening');
