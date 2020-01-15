@@ -72,5 +72,27 @@ app.post('/api/groups', function (req, res) {
     })
 });
 
+//users
+app.get('/users', function(req, res) {
+    res.render('pages/users');
+});
+//looking for logged in user to populate user's page
+
+app.get('/users/:id', function (req, res) {
+    let id = req.params.id;
+    let first = req.params.firstName;
+    let last = req.params.lastName;
+    let email = req.params.email;
+
+});
+    db.one("SELECT * FROM users WHERE id=$1", [id])
+        .then((results) => {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(results));
+        })
+        .catch((e) => {
+            console.error(e);
+        });
+
 app.listen(3000);
 console.log('Clubs are listening');

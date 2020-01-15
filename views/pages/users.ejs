@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%-  include('../partials/userhead') -%>
+    <%-  include('../partials/usershead') -%>
 </head>
 <body class="container">
 
 <header>
-        <%-  include('../partials/userheader') -%>
+        <%-  include('../partials/usersheader') -%>
 </header>
 
 
@@ -21,32 +21,29 @@
                     </div>
                     <div class="col-sm-6 col-md-8">
                         <h4>
-                           User </h4>
-                        <small><cite title="San Francisco, USA">San Francisco, USA <i class="glyphicon glyphicon-map-marker">
+                           User First Name User Last Name</h4>
+                        <small><cite title="San Francisco, USA">City, State <i class="glyphicon glyphicon-map-marker">
                         </i></cite></small>
                         <p>
                             <i class="glyphicon glyphicon-envelope"></i>email@example.com
                             <br />
                             <i class="glyphicon glyphicon-globe"></i><a href="http://www.jquery2dotnet.com">www.jquery2dotnet.com</a>
                             <br />
-                            <i class="glyphicon glyphicon-gift"></i>Birthday</p>
-                        <!-- Split button -->
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary">
-                                Social</button>
-                            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
-                                <span class="caret"></span><span class="sr-only">Social</span>
-                            </button>
-                            <!-- Group button -->
-                            <button type="button" id="groupButton">Groups Page</button>
-
                             <ul class="dropdown-menu" role="menu">
-                                <li><a href="#">Twitter</a></li>
+                                <li><a href="https://www.twitter.com">Twitter</a></li>
                                 <li><a href="https://plus.google.com/+Jquery2dotnet/posts">Google +</a></li>
                                 <li><a href="https://www.facebook.com/jquery2dotnet">Facebook</a></li>
                                 <li class="divider"></li>
                                 <li><a href="#">Github</a></li>
                             </ul>
+                          
+                        <!-- Split button -->
+                        <div class="btn-group">
+                            
+                            <!-- Group button -->
+                            <button type="button" id="groupButton">Groups Page</button>
+
+                            
                         </div>
                     </div>
                 </div>
@@ -63,7 +60,7 @@
 </body>
 <script type="text/javascript">
 document.getElementById("groupButton").onClick = function(){
-    location.href = "to be group page route here";
+    location.href = "http://localhost:3000/groups";
     };
 
 </script>
