@@ -58,6 +58,14 @@ app.get('/create_group', function(req, res) {
     res.render('pages/create_group');
 });
 
+app.get('/group_info', function(req, res) {
+    const group = Groups.findOne({ where: { id: 2 } }).then(results => {
+        res.render('pages/group_info', { group: results });
+    }).catch(function(e) {
+        return 'no results'
+    })
+});
+
 app.get('/api/groups', function (req, res) {
     Groups.findAll().then((results) => {
         res.setHeader('Content-Type', 'application/json');
