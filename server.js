@@ -1,10 +1,10 @@
 require('dotenv').config();
 
 const config = {
-    host: 'localhost',
+    host: process.env.DB_HOST,
     port: 5432,
-    database: 'clubhost',
-    username: 'postgres',
+    database: process.env.DB_NAME,
+    username: process.env.DB_USER,
     password: process.env.DB_PASS,
 };
 
@@ -13,7 +13,6 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
-
 
 const bcrypt = require('bcrypt');
 
