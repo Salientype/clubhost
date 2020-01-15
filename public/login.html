@@ -1,0 +1,79 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Login Page</title>
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <link href="/public/css/signin.css" rel="stylesheet">
+  </head>
+
+		<div class="logo">
+			<img src="/public/logo.jpeg" alt="Club Social" width="150" height="150">
+		</div>
+
+		<div class="wrapper fadeInDown">
+			<div id="formContent">
+		
+				<!-- Login Form -->
+				<form>
+					<input type="text" id="loginFirstName" class="fadeIn second" name="login" placeholder="FirstName">
+					<input type="text" id="loginLastName" class="fadeIn second" name="login" placeholder="LastName">
+					<input type="text" id="loginEmail" class="fadeIn second" name="login" placeholder="Email">
+					<input type="text" id="loginPassword" class="fadeIn third" name="login" placeholder="Password">
+					<input type="submit" class="fadeIn fourth" value="Log In" onclick="submitLogin(event)">
+				</form>
+	
+		
+			</div>
+		</div>
+	
+	<script type="text/javascript">
+
+    function submitLogin(event) {
+				event.preventDefault();
+				
+				let firstName_input = $('#loginFirstName').val();
+        let lastName_input = $('#loginLastName').val();
+        let email_input = $('#loginEmail').val();
+        // let email_input = document.getElementById('inputEmail').val
+
+        let password_input = $('#loginPassword').val();
+        // let password_input = document.getElementById('inputPassword').val
+
+        let data = {
+					lastName : lastName_input,
+					firstName : firstName_input,
+          email : email_input,
+          password: password_input
+        };
+
+        let successCallback = function(response) {
+
+          window.localStorage.setItem("user_id", response.id);
+          window.localStorage.setItem("name", response.name);
+
+          //Changes the html page
+          window.location = 'user.html';
+
+        }
+
+        let failureCallback = function(response) {
+          $('#errorMessage').html(response.responseText);
+          //document.elementById('errorMessage').innerHtml = response.responseText
+        }
+
+        apiLogin(data, successCallback, failureCallback);
+    }
+  
+  </script>
+  </html>
+
+  

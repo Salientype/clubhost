@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const config = {
     host: 'localhost',
     port: 5432,
@@ -73,4 +74,127 @@ app.post('/api/groups', function (req, res) {
 });
 
 app.listen(3000);
+=======
+const config = {
+    host: 'localhost',
+    port: 5432,
+    database: 'clubhost',
+    username: 'postgres',
+    password: '',
+};
+
+var express = require('express');
+var bodyParser = require('body-parser');
+var cors = require('cors');
+var session = require('express-session');
+var cookieParser = require('cookie-parser');
+
+const bcrypt = require('bcrypt');
+
+
+const Sequelize = require('sequelize')
+const GroupsModel = require('./models/groups')
+
+const connectionString = `postgres://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`
+const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
+    dialect: 'postgres',
+    pool: {
+      max: 10,
+      min: 0,
+      acquire: 30000,
+      idle: 10000
+    }
+  })
+
+  console.log(connectionString)
+
+const Groups = GroupsModel(sequelize, Sequelize);
+
+
+var app = express();
+
+
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(cors());
+app.use(cookieParser());
+app.use(express.static('public'))
+app.set('view engine', 'ejs');
+
+
+app.get('/groups', function(req, res) {
+    res.render('pages/groups');
+});
+
+app.get('/api/groups', function (req, res) {
+    Groups.findAll().then((results) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function(e) {
+        console.log(e);
+        res.status(434).send('error retrieving groups');
+    })
+});
+
+app.post('/api/groups', function (req, res) {
+    let data = {
+        name: req.body.name,
+        description: req.body.description,
+    };
+    Groups.create(data).then(function (group) {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(group));
+    }).catch(function(e) {
+        res.status(434).send('unable to create group')
+    })
+});
+
+app.post('/api/login', function (req, res) {
+    let email = req.body.email.toLowerCase().trim();
+    let password = req.body.password;
+    if (email && password) {
+        Users.findOne({
+            where: {
+                email: email
+            },
+        }).then((results) => {
+            bcrypt.compare(password, results.password).then(function(matched) {
+                if (matched) {
+                  req.session.user = results.id;
+                  req.session.name = results.name;
+                  res.setHeader('Content-Type', 'application/json');
+                  res.end(JSON.stringify(results));
+                } else {
+                    res.status(434).send('Email/Password combination did not match')
+                }
+            });
+        }).catch((e) => {
+            res.status(434).send('Email does not exist in the database')
+        });
+    } else {
+        res.status(434).send('Both email and password is required to login')
+    }
+  });
+  app.post('/api/register', function (req, res) {
+    console.log(req.body.email);
+  let data = {
+      name: req.body.name,
+      email: req.body.email.toLowerCase().trim(),
+      password: req.body.password
+  };
+  if (data.name && data.email && data.password) {
+      var salt = bcrypt.genSaltSync(10);
+      var hash = bcrypt.hashSync(data.password, salt);
+      data['password'] = hash;
+      Users.create(data).then(function (user) {
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify(user));
+      });;
+  } else {
+      res.status(434).send('Name, email and password is required to register')
+  }
+});
+
+app.listen(3000);
+>>>>>>> 9e52bf439c3aeb8996f1cb97f15ec84af5c0d0a7
 console.log('Clubs are listening');
