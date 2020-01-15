@@ -13,7 +13,7 @@ function apiAddGroups(data, successCallback, errorCallback) {
     $.ajax({
         type: "POST",
         data : data,
-        url: api_url + 'api/groups',
+        url: "http://localhost:3000/" + 'api/groups',
         success: successCallback,
         error : errorCallback
     });
