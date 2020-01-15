@@ -68,15 +68,15 @@ app.get('/api/groups', function (req, res) {
     })
 });
 
-app.get('/api/users', function (req, res) {
-    Groups.findAll().then((results) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(results));
-    }).catch(function(e) {
-        console.log(e);
-        res.status(434).send('error retrieving groups');
-    })
-});
+// app.get('/api/users', function (req, res) {
+//     Groups.findAll().then((results) => {
+//         res.setHeader('Content-Type', 'application/json');
+//         res.end(JSON.stringify(results));
+//     }).catch(function(e) {
+//         console.log(e);
+//         res.status(434).send('error retrieving groups');
+//     })
+// });
 
 app.post('/api/groups', function (req, res) {
     let data = {
