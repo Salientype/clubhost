@@ -58,7 +58,7 @@ app.get('/create_group', function(req, res) {
 });
 
 app.get('/group_info', function(req, res) {
-    const group = Groups.findOne({ where: { id: 2 } }).then(results => {
+    const group = Groups.findOne({ where: { id: 1 } }).then(results => {
         res.render('pages/group_info', { group: results });
     }).catch(function(e) {
         return 'no results'
@@ -79,7 +79,7 @@ app.post('/api/groups', function (req, res) {
     let data = {
         name: req.body.name,
         description: req.body.description,
-        image: req.body.image
+        group_image: req.body.group_image
     };
     Groups.create(data).then(function (group) {
         res.setHeader('Content-Type', 'application/json');

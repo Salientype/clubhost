@@ -15,11 +15,11 @@
 <main id="groupFeed">
     <% groups.forEach( group => { %>
         <div class="card" style="width: 18rem;">
-            <img src="" class="card-img-top" alt="Could not load image">
+            <img src="/public/images/cms_clubs_large.png" class="card-img-top" pattern="https?://.+" alt="Could not load image">
             <div class="card-body">
                 <h5 class="card-title"><%= group.name %></h5>
                 <p class="card-text"><%= group.description %></p>
-                <a href="#" class="btn btn-primary">Join!</a>
+                <a href="/views/pages/group_info.ejs" class="btn btn-primary">Join!</a>
             </div>
         </div>
     <% }) %>

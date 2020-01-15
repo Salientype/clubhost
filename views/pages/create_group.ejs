@@ -19,7 +19,7 @@
     </div>
     <div class="form-group">
         <label for="exampleFormControlInput1">Group Image</label>
-        <input class="form-control" id="groupImage" placeholder="Insert Image URL">
+        <input type="url" class="form-control" id="groupImage" pattern="https?://.+" placeholder="Insert Image URL">
     </div>
     <div class="form-group">
         <label for="exampleFormControlSelect1">Visibility</label>
@@ -65,8 +65,8 @@ function submitGroup(event) {
 
     let data = {
         name : name_input,
-        image : image_input,
-        description: description_input
+        description: description_input,
+        group_image : image_input,
     };
 
     apiAddGroups(data);
