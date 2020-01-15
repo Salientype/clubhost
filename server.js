@@ -13,6 +13,7 @@ var cors = require('cors');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
 
+
 const bcrypt = require('bcrypt');
 
 
@@ -42,7 +43,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser());
-app.use(express.static('public'))
+app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
 
@@ -64,6 +65,14 @@ app.get('/group_info', function(req, res) {
     }).catch(function(e) {
         return 'no results'
     })
+});
+
+app.get('/login', function(req, res) {
+    res.sendFile(__dirname + '/public/' + 'login.html');
+});
+
+app.get('/register', function(req, res) {
+    res.sendFile(__dirname + '/public/' + 'register.html');
 });
 
 app.get('/api/groups', function (req, res) {
