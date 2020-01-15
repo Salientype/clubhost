@@ -17,3 +17,4 @@ function createPostItem(data) {
 function insertIntoFeed(item) {
     $('#groupFeed').append(item); 
 }
+
