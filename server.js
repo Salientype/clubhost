@@ -31,7 +31,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
     }
   })
 
-  console.log(connectionString)
+console.log(connectionString)
 
 const Groups = GroupsModel(sequelize, Sequelize);
 
