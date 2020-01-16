@@ -35,9 +35,7 @@ console.log(connectionString)
 
 const Groups = GroupsModel(sequelize, Sequelize);
 
-
 var app = express();
-
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -75,21 +73,14 @@ app.get('/register', function(req, res) {
     res.sendFile(__dirname + '/public/' + 'register.html');
 });
 
-app.get('/api/groups', function (req, res) {
-    Groups.findAll().then((results) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(results));
-    }).catch(function(e) {
-        console.log(e);
-        res.status(434).send('error retrieving groups');
-    })
-});
 
+// add a group to DB
 app.post('/api/groups', function (req, res) {
     let data = {
         name: req.body.name,
         description: req.body.description,
-        image: req.body.image
+        category: req.body.description,
+        logo_link: req.body.logo_link
     };
     Groups.create(data).then(function (group) {
         res.setHeader('Content-Type', 'application/json');
@@ -125,6 +116,7 @@ app.post('/api/login', function (req, res) {
         res.status(434).send('Both email and password is required to login')
     }
   });
+  
   app.post('/api/register', function (req, res) {
     console.log(req.body.email);
   let data = {
