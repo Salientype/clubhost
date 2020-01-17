@@ -16,12 +16,12 @@ var cookieParser = require('cookie-parser');
 
 const bcrypt = require('bcrypt');
 
-
 const Sequelize = require('sequelize')
 const GroupsModel = require('./models/groups')
 
 const connectionString = `postgres://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`
 const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
+    
     dialect: 'postgres',
     pool: {
       max: 10,
@@ -29,11 +29,13 @@ const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
       acquire: 30000,
       idle: 10000
     }
-  })
+
+})
 
 console.log(connectionString)
 
 const Groups = GroupsModel(sequelize, Sequelize);
+
 
 var app = express();
 
@@ -43,7 +45,6 @@ app.use(cors());
 app.use(cookieParser());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
-
 
 app.get('/groups', function(req, res) {
     const groups = Groups.findAll().then((results) => {
@@ -73,6 +74,15 @@ app.get('/register', function(req, res) {
     res.sendFile(__dirname + '/public/' + 'register.html');
 });
 
+app.get('/api/groups', function (req, res) {
+    Groups.findAll().then((results) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function(e) {
+        console.log(e);
+        res.status(434).send('error retrieving groups');
+    })
+});
 
 // add a group to DB
 app.post('/api/groups', function (req, res) {
