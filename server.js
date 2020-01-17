@@ -57,8 +57,9 @@ app.get('/create_group', function(req, res) {
     res.render('pages/create_group');
 });
 
-app.get('/group_info', function(req, res) {
-    const group = Groups.findOne({ where: { id: 1 } }).then(results => {
+app.get('/group_info/:id', function(req, res) {
+    let id = req.params.id;
+    const group = Groups.findOne({ where: { id: id } }).then(results => {
         res.render('pages/group_info', { group: results });
     }).catch(function(e) {
         return 'no results'

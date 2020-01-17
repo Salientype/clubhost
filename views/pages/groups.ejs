@@ -19,7 +19,7 @@
             <div class="card-body">
                 <h5 class="card-title"><%= group.name %></h5>
                 <p class="card-text"><%= group.description %></p>
-                <a href="/views/pages/group_info.ejs" class="btn btn-primary">Join!</a>
+                <a href="/group_info/<%= group.id %>" class="btn btn-primary">Join!</a>
             </div>
         </div>
     <% }) %>
