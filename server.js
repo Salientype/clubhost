@@ -1,11 +1,13 @@
 require('dotenv').config();
 
 const config = {
+    
     host: process.env.DB_HOST,
     port: 5432,
     database: process.env.DB_NAME,
     username: process.env.DB_USER,
     password: process.env.DB_PASS,
+
 };
 
 var express = require('express');
@@ -103,6 +105,7 @@ app.post('/api/groups', function (req, res) {
 });
 
 app.post('/api/login', function (req, res) {
+    
     let email = req.body.email.toLowerCase().trim();
     let password = req.body.password;
     if (email && password) {
@@ -127,6 +130,7 @@ app.post('/api/login', function (req, res) {
     } else {
         res.status(434).send('Both email and password is required to login')
     }
+    
 });
 
 app.post('/api/register', function (req, res) {
