@@ -2,10 +2,10 @@
 module.exports = (sequelize, DataTypes) => {
   const activities = sequelize.define('activities', {
     group_id: DataTypes.INTEGER,
-    date: DataTypes.DATE,
+    // date: DataTypes.DATE,
     title: DataTypes.STRING,
     description: DataTypes.TEXT,
-    is_private: DataTypes.BOOLEAN,
+    // is_private: DataTypes.BOOLEAN,
     fee: DataTypes.INTEGER
   }, {});
   activities.associate = function(models) {

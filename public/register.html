@@ -73,10 +73,12 @@
          // let password_input = document.getElementById('inputPassword').val
 
         let data = {
+          
           firstName : firstName_input,
           lastName : lastName_input,
           email : email_input,
           password: password_input
+          
         };
 
         let successCallback = function(response) {
@@ -84,7 +86,7 @@
           window.localStorage.setItem("user_id", response.id);
           window.localStorage.setItem("name", response.name);
 
-          window.location = 'users.ejs';
+          window.location = 'users.html';
 
         }
 
