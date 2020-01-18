@@ -18,6 +18,7 @@ const bcrypt = require('bcrypt');
 
 const Sequelize = require('sequelize')
 const GroupsModel = require('./models/groups')
+const ActivitiesModel = require('./models/activities')
 
 const connectionString = `postgres://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`
 const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
@@ -35,6 +36,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
 console.log(connectionString)
 
 const Groups = GroupsModel(sequelize, Sequelize);
+const Activities = ActivitiesModel(sequelize, Sequelize);
 
 
 var app = express();
@@ -56,6 +58,10 @@ app.get('/groups', function(req, res) {
 
 app.get('/create_group', function(req, res) {
     res.render('pages/create_group');
+});
+
+app.get('/create_activity', function(req, res) {
+    res.render('pages/create_activity');
 });
 
 app.get('/group_info/:id', function(req, res) {
@@ -90,7 +96,7 @@ app.post('/api/groups', function (req, res) {
     let data = {
         name: req.body.name,
         description: req.body.description,
-        category: req.body.description,
+        category: req.body.category,
         logo_link: req.body.logo_link
     };
     Groups.create(data).then(function (group) {
@@ -98,6 +104,32 @@ app.post('/api/groups', function (req, res) {
         res.end(JSON.stringify(group));
     }).catch(function(e) {
         res.status(434).send('unable to create group')
+    })
+});
+
+app.get('/api/activities', function (req, res) {
+    Activities.findAll().then((results) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function(e) {
+        console.log(e);
+        res.status(434).send('error retrieving activities');
+    })
+});
+
+app.post('/api/activities', function (req, res) {
+    let data = {
+        title: req.body.title,
+        description: req.body.description,
+        // date: req.body.date,
+        // is_private: req.body.is_private,
+        group_id: req.body.group_id
+    };
+    Activities.create(data).then(function (activity) {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(activity));
+    }).catch(function(e) {
+        res.status(434).send('unable to create activity')
     })
 });
 
