@@ -12,6 +12,12 @@ function apiAddGroups(data, successCallback, errorCallback) {
     .catch(errorCallback);
 }
 
+function apiRegister(data, successCallback, errorCallback) {
+  axios.post("http://localhost:3000/" + 'api/register', data )
+    .then(successCallback)
+    .catch(errorCallback);
+}
+
 function apiGetActivity() {
 
 return axios.get("http://localhost:3000/" + 'api/activities')

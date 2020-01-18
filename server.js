@@ -51,16 +51,32 @@ app.use(cookieParser());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
-app.get('/users', function(req, res) {
-    res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
+
+// get users of selected group
+app.get('/api/users_in_group/:id', function(req, res) {
+    
+    let id =  req.params.id;
+    
+    const group = Users.findAll({ where: { id: id } }).then(results => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function (e) {
+        //console.log(e);
+        res.status(434).send('error retrieving groups');
+    })
+    
 });
 
-app.get('/groups', function (req, res) {
+// res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
+
+app.get('/api/groups', function (req, res) {
+    
     const groups = Groups.findAll().then((results) => {
         res.render('pages/groups', { groups: results });
     }).catch(function (e) {
         return 'no results'
     })
+
 });
 
 app.get('/create_group', function (req, res) {
