@@ -18,6 +18,7 @@ const bcrypt = require('bcrypt');
 
 const Sequelize = require('sequelize')
 const GroupsModel = require('./models/groups')
+const UsersModel = require('./models/users')
 
 const connectionString = `postgres://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`
 const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
@@ -35,7 +36,7 @@ const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
 console.log(connectionString)
 
 const Groups = GroupsModel(sequelize, Sequelize);
-
+const Users = UsersModel(sequelize,Sequelize);
 
 var app = express();
 
@@ -128,14 +129,15 @@ app.post('/api/login', function (req, res) {
     }
   });
   
-  app.post('/api/register', function (req, res) {
+  app.post('/register', function (req, res) {
     console.log(req.body.email);
   let data = {
-      name: req.body.name,
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
       email: req.body.email.toLowerCase().trim(),
       password: req.body.password
   };
-  if (data.name && data.email && data.password) {
+  if (data.firstName && data.lastName && data.email && data.password) {
       var salt = bcrypt.genSaltSync(10);
       var hash = bcrypt.hashSync(data.password, salt);
       data['password'] = hash;
