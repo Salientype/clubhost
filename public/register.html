@@ -82,8 +82,8 @@
         let successCallback = function(response) {
 
           window.localStorage.setItem("user_id", response.id);
-          window.localStorage.setItem("firstname", response.firstName);
-          window.localStorage.setItem("lastname", response.lastName);
+          window.localStorage.setItem("name", response.name);
+
           window.location = 'users.html';
 
         }
