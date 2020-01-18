@@ -6,6 +6,7 @@ module.exports = (sequelize, DataTypes) => {
     category: DataTypes.STRING,
     member_count: DataTypes.INTEGER,
     logo_link: DataTypes.STRING,
+    group_image: DataTypes.STRING,
     creation_date: DataTypes.DATE
   }, {});
   groups.associate = function(models) {

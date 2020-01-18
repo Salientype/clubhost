@@ -12,12 +12,13 @@
 <br>
 <br>
 <div class="jumbotron">
-        <h1 class="display-4"><%= group.name %></h1>
-        <p class="lead"><%= group.description %></p>
-        <hr class="my-4">
-        <p>It uses utility classes for typography and spacing to space content out within the larger container.</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
-      </div>
+  <img src="<%= group.logo_link %>" class="card-img-top" pattern="https?://.+" alt="Could not load image">
+  <h1 class="display-4"><%= group.name %></h1>
+  <p class="lead"><%= group.description %></p>
+  <hr class="my-4">
+  <a class="btn btn-primary btn-lg" href="/create_activity" role="button">Create Activity</a>
+  <a class="btn btn-primary btn-lg" href="#" role="button">Delete Group</a>
+</div>
 
 
 <footer>
@@ -37,26 +38,5 @@
 <script src="/js/axios.js"></script>
 <script src="/js/jquery.js"></script>
 <script src="/js/app.js"></script>
-
-<script>
-function submitGroup(event) {
-    event.preventDefault();
-
-    let name_input = document.getElementById('groupName').value;
-
-    let image_input = document.getElementById('groupImage').value;
-
-    let description_input = document.getElementById('groupDescription').value;
-
-    let data = {
-        name : name_input,
-        image : image_input,
-        description: description_input
-    };
-
-    apiAddGroups(data);
-}
-
-</script>
 
 </html>

@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-  include('../partials/head') -%>
+</head>
+<body class="container">
+
+<header>
+        <%-  include('../partials/header') -%>
+</header>
+
+<br>
+<br>
+
+<form>
+        <h1>Create A New Activity!</h1>
+        <div class="form-group">
+            <label for="exampleFormControlInput1">Title</label>
+            <input class="form-control" id="activityTitle" placeholder="Event Name">
+        </div>
+        <!-- <div class="form-group">
+                <label for="exampleFormControlInput1">Date</label>
+                <input class="form-control" id="activityDate" placeholder="Date">
+            </div> -->
+            <!-- <div class="form-group">
+                <label for="exampleFormControlSelect1">Privacy</label>
+                <select class="form-control" id="activityPrivacy">
+                <option>Public</option>
+                <option>Private</option>
+                </select>
+            </div> -->
+        <div class="form-group">
+            <label for="exampleFormControlTextarea1">Description</label>
+            <textarea class="form-control" id="activityDescription" rows="3" placeholder="Enter text"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary" onclick="submitActivity(event)">Submit</button>
+    </form>
+
+<footer>
+    <%-  include('../partials/footer') -%>
+</footer>
+
+</body>
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.js"
+    integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="crossorigin="anonymous"></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+    integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+<script src="/js/axios.js"></script>
+<script src="/js/jquery.js"></script>
+<script src="/js/app.js"></script>
+
+<script>
+function submitActivity(event) {
+    event.preventDefault();
+
+    let title_input = document.getElementById('activityTitle').value;
+
+    // let date_input = document.getElementById('activityDate').value;
+
+    let description_input = document.getElementById('activityDescription').value;
+
+    // let privacy_input = document.getElementById('activityPrivacy').value;
+
+    let data = {
+        title: title_input,
+        description: description_input,
+        // date: date_input,
+        // is_private: privacy_input
+    };
+
+    apiAddActivity(data);
+}
+
+</script>
+
+</html>
