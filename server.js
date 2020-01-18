@@ -18,6 +18,10 @@ const bcrypt = require('bcrypt');
 
 const Sequelize = require('sequelize')
 const GroupsModel = require('./models/groups')
+const UsersModel = require('./models/users')
+
+const pgp = require('pg-promise')();
+const db = pgp(config);
 
 const connectionString = `postgres://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`
 const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
@@ -33,7 +37,6 @@ const sequelize = new Sequelize(process.env.DATABASE_URL || connectionString, {
   console.log(connectionString)
 
 const Groups = GroupsModel(sequelize, Sequelize);
-
 
 var app = express();
 
@@ -90,27 +93,7 @@ app.post('/api/groups', function (req, res) {
     })
 });
 
-//users
-app.get('/users', function(req, res) {
-    res.render('pages/users');
-});
-//looking for logged in user to populate user's page
-
-app.get('/users/:id', function (req, res) {
-    let id = req.params.id;
-    let first = req.params.firstName;
-    let last = req.params.lastName;
-    let email = req.params.email;
-
-});
-    db.one("SELECT * FROM users WHERE id=$1", [id])
-        .then((results) => {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify(results));
-        })
-        .catch((e) => {
-            console.error(e);
-        });
+//login     
 app.post('/api/login', function (req, res) {
     let email = req.body.email.toLowerCase().trim();
     let password = req.body.password;
@@ -122,6 +105,7 @@ app.post('/api/login', function (req, res) {
         }).then((results) => {
             bcrypt.compare(password, results.password).then(function(matched) {
                 if (matched) {
+                    console.log(results)
                   req.session.user = results.id;
                   req.session.name = results.name;
                   res.setHeader('Content-Type', 'application/json');
@@ -156,6 +140,14 @@ app.post('/api/login', function (req, res) {
       res.status(434).send('Name, email and password is required to register')
   }
 });
+
+//users
+const Users = UsersModel(sequelize, Sequelize)
+//gets one user from logged in session req.session.firstName/whatever variable is
+app.get('/users', function(req, res) {
+    res.render('pages/users', {users: {firstName: "test-req.session.name", lastName: "test-last name", email: "req.session.email"}});
+});
+
 
 app.listen(3000);
 console.log('Clubs are listening');
