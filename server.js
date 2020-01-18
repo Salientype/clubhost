@@ -145,7 +145,7 @@ app.post('/api/login', function (req, res) {
 const Users = UsersModel(sequelize, Sequelize)
 //gets one user from logged in session req.session.firstName/whatever variable is
 app.get('/users', function(req, res) {
-    res.render('pages/users', {users: {firstName: "test-req.session.name", lastName: "test-last name", email: "req.session.email"}});
+    res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
 });
 
 
