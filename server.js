@@ -51,6 +51,32 @@ app.use(cookieParser());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
+// res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
+
+// get groups endpoint
+app.get('/api/groups', function (req, res) {
+    
+    Groups.findAll().then((results) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function (e) {
+        console.log(e);
+        res.status(434).send('error retrieving groups');
+    })
+
+});
+
+// render all groups on page
+app.get('/groups', function (req, res) {
+    
+    Groups.findAll().then((results) => {
+        res.render('pages/groups', { groups: results });
+    }).catch(function (e) {
+        return 'no results'
+    })
+
+});
+
 
 // get users of selected group
 app.get('/api/users_in_group/:id', function(req, res) {
@@ -65,18 +91,6 @@ app.get('/api/users_in_group/:id', function(req, res) {
         res.status(434).send('error retrieving groups');
     })
     
-});
-
-// res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
-
-app.get('/api/groups', function (req, res) {
-    
-    const groups = Groups.findAll().then((results) => {
-        res.render('pages/groups', { groups: results });
-    }).catch(function (e) {
-        return 'no results'
-    })
-
 });
 
 app.get('/create_group', function (req, res) {
@@ -102,16 +116,6 @@ app.get('/login', function (req, res) {
 
 app.get('/register', function (req, res) {
     res.sendFile(__dirname + '/public/' + 'register.html');
-});
-
-app.get('/api/groups', function (req, res) {
-    Groups.findAll().then((results) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(results));
-    }).catch(function (e) {
-        console.log(e);
-        res.status(434).send('error retrieving groups');
-    })
 });
 
 // add a group to DB

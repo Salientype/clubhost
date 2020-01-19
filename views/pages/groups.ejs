@@ -36,13 +36,15 @@
 <script src="/js/axios.js"></script>
 <script src="/js/app.js"></script>
 
-<!-- <script>
+<script>
 apiGetGroups().then(response => {
-    const html = response.data.map(group => {
+    
+    const groups = response.data.map(group => {
         return createPostItem(group)
     }).join('');
     document.getElementById('groupFeed').innerHTML = html;
+
 })
-</script> -->
+</script>
 
 </html>
