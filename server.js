@@ -106,6 +106,40 @@ app.get('/group_info/:id', function(req, res) {
 
 });
 
+// API update selected group 
+app.put('/api/update_group', function (req, res) {
+
+    let data = {
+        id: req.body.id,
+        name: req.body.name,
+        description: req.body.description,
+        category: req.body.category,
+        logo_link: req.body.logo_link
+    };
+
+    Groups.findOne({ where: { id: data.id } }).then(function (group) {
+        
+        group.update({
+
+            name: data.name,
+            description: data.description,
+            category: data.category,
+            logo_link: data.logo_link
+
+        }).then(function (newData) {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(newData));
+        }).catch(function (e) {
+            res.status(434).send('unable to update group')
+        })
+        
+    }).catch(function (e) {
+        res.status(434).send('unable to find group')
+    })
+    
+
+});
+
 // API delete selected group 
 app.delete('/api/destroy_group', function (req, res) {
 
@@ -154,7 +188,7 @@ app.get('/register', function (req, res) {
     res.sendFile(__dirname + '/public/' + 'register.html');
 });
 
-// add a group to DB
+// API add a group to DB
 app.post('/api/groups', function (req, res) {
     
     let data = {
