@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     member_count: DataTypes.INTEGER,
     logo_link: DataTypes.STRING,
     group_image: DataTypes.STRING,
-    creation_date: DataTypes.DATE
+    creation_date: DataTypes.DATE,
+    activity_id: DataTypes.INTEGER
   }, {});
   groups.associate = function(models) {
     // associations can be defined here

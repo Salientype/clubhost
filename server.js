@@ -13,6 +13,7 @@ var bodyParser = require('body-parser');
 var cors = require('cors');
 var session = require('express-session');
 var cookieParser = require('cookie-parser');
+const ejsLint = require('ejs-lint');
 
 const bcrypt = require('bcrypt');
 
@@ -38,6 +39,9 @@ console.log(connectionString)
 const Groups = GroupsModel(sequelize, Sequelize);
 const Activities = ActivitiesModel(sequelize, Sequelize);
 
+Groups.hasMany(Activities, {foreignKey: 'group_id'});
+Activities.belongsTo(Groups, {foreignKey: 'group_id'});
+
 
 var app = express();
 
@@ -46,7 +50,10 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 app.use(cookieParser());
 app.use(express.static('public'));
+app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 app.set('view engine', 'ejs');
+
+var sess;
 
 app.get('/groups', function(req, res) {
     const groups = Groups.findAll().then((results) => {
@@ -68,7 +75,9 @@ app.get('/group_info/:id', function(req, res) {
     let id = req.params.id;
     const group = Groups.findOne({ where: { id: id } }).then(results => {
         res.render('pages/group_info', { group: results });
-    }).catch(function(e) {
+    })
+    
+    .catch(function(e) {
         return 'no results'
     })
 });
@@ -108,7 +117,7 @@ app.post('/api/groups', function (req, res) {
 });
 
 app.get('/api/activities', function (req, res) {
-    Activities.findAll().then((results) => {
+    const activities = Activities.findAll().then((results) => {
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(results));
     }).catch(function(e) {
@@ -132,6 +141,21 @@ app.post('/api/activities', function (req, res) {
         res.status(434).send('unable to create activity')
     })
 });
+
+// app.delete('/api/groups/:id', function (req, res) {
+//     let id = req.params.id
+//     Groups.destroy({
+//         where: {
+//             id: id
+//         }
+//     }).then(function(rowDeleted) {
+//         if(rowDeleted === 1){
+//             console.log('Deleted successfully');
+//             }
+//         }, function(err){
+//         console.log(err);
+//     })
+// })
 
 app.post('/api/login', function (req, res) {
     let email = req.body.email.toLowerCase().trim();

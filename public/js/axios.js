@@ -12,6 +12,12 @@ function apiAddGroups(data, successCallback, errorCallback) {
     .catch(errorCallback);
 }
 
+function apiDeleteGroup(data, successCallback, errorCallback) {
+  axios.delete("http://localhost:3000/" + 'api/groups', data )
+    .then(successCallback)
+    .catch(errorCallback);
+  }
+
 function apiGetActivity() {
 
 return axios.get("http://localhost:3000/" + 'api/activities')
@@ -24,3 +30,4 @@ axios.post("http://localhost:3000/" + 'api/activities', data )
   .then(successCallback)
   .catch(errorCallback);
 }
+
