@@ -106,6 +106,23 @@ app.get('/group_info/:id', function(req, res) {
 
 });
 
+// API delete selected group 
+app.delete('/api/destroy_group', function (req, res) {
+
+    let data = {
+        id: req.body.id
+    };
+
+    Groups.destroy({ where: { id: data.id } }).then(function (group) {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(group));
+    }).catch(function (e) {
+        res.status(434).send('unable to delete group')
+    })
+
+});
+
+
 // API get users of selected group endpoint
 app.get('/api/users_in_group/:id', function(req, res) {
     
@@ -153,7 +170,7 @@ app.post('/api/groups', function (req, res) {
     }).catch(function (e) {
         res.status(434).send('unable to create group')
     })
-    
+
 });
 
 app.get('/api/activities', function (req, res) {
