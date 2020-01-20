@@ -53,7 +53,7 @@ app.set('view engine', 'ejs');
 
 // res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
 
-// get groups endpoint
+// API get groups endpoint
 app.get('/api/groups', function (req, res) {
     
     Groups.findAll().then((results) => {
@@ -66,7 +66,7 @@ app.get('/api/groups', function (req, res) {
 
 });
 
-// render all groups on page
+// render all groups on page view
 app.get('/groups', function (req, res) {
     
     Groups.findAll().then((results) => {
@@ -78,16 +78,44 @@ app.get('/groups', function (req, res) {
 });
 
 
-// get users of selected group
+// API endpoint get info on selected group
+app.get('/api/group_info/:id', function(req, res) {
+    
+    let id = req.params.id;
+    
+    Groups.findOne({ where: { id: id } }).then(results => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function (e) {
+        console.log(e);
+        res.status(434).send('error retrieving info on group');
+    })
+    
+});
+
+// render single group info to page
+app.get('/group_info/:id', function(req, res) {
+    
+    let id = req.params.id;
+    
+    Groups.findOne({ where: { id: id } }).then(results => {
+        res.render('pages/group_info', { group: results });
+    }).catch(function (e) {
+        return 'no results'
+    })
+
+});
+
+// API get users of selected group endpoint
 app.get('/api/users_in_group/:id', function(req, res) {
     
     let id =  req.params.id;
     
-    const group = Users.findAll({ where: { id: id } }).then(results => {
+    Users.findAll({ where: { group_id: id } }).then(results => {
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(results));
     }).catch(function (e) {
-        //console.log(e);
+        console.log(e);
         res.status(434).send('error retrieving groups');
     })
     
@@ -101,15 +129,6 @@ app.get('/create_activity', function(req, res) {
     res.render('pages/create_activity');
 });
 
-app.get('/group_info/:id', function(req, res) {
-    let id = req.params.id;
-    const group = Groups.findOne({ where: { id: id } }).then(results => {
-        res.render('pages/group_info', { group: results });
-    }).catch(function (e) {
-        return 'no results'
-    })
-});
-
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + '/public/' + 'login.html');
 });
@@ -120,18 +139,21 @@ app.get('/register', function (req, res) {
 
 // add a group to DB
 app.post('/api/groups', function (req, res) {
+    
     let data = {
         name: req.body.name,
         description: req.body.description,
         category: req.body.category,
         logo_link: req.body.logo_link
     };
+    
     Groups.create(data).then(function (group) {
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(group));
     }).catch(function (e) {
         res.status(434).send('unable to create group')
     })
+    
 });
 
 app.get('/api/activities', function (req, res) {
