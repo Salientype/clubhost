@@ -21,6 +21,7 @@ const bcrypt = require('bcrypt');
 
 const Sequelize = require('sequelize')
 const GroupsModel = require('./models/groups')
+const UsersModel = require('./models/users')
 const ActivitiesModel = require('./models/activities')
 
 const connectionString = `postgres://${config.username}:${config.password}@${config.host}:${config.port}/${config.database}`
@@ -52,12 +53,127 @@ app.use(express.static('public'));
 app.use(session({secret: 'ssshhhhh',saveUninitialized: true,resave: true}));
 app.set('view engine', 'ejs');
 
+// res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
+
+// API get groups endpoint
+app.get('/api/groups', function (req, res) {
+    
+    Groups.findAll().then((results) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function (e) {
+        console.log(e);
+        res.status(434).send('error retrieving groups');
+    })
+
+});
+
+// render all groups on page view
 app.get('/groups', function (req, res) {
-    const groups = Groups.findAll().then((results) => {
+    
+    Groups.findAll().then((results) => {
         res.render('pages/groups', { groups: results });
     }).catch(function (e) {
         return 'no results'
     })
+
+});
+
+
+// API endpoint get info on selected group
+app.get('/api/group_info/:id', function(req, res) {
+    
+    let id = req.params.id;
+    
+    Groups.findOne({ where: { id: id } }).then(results => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function (e) {
+        console.log(e);
+        res.status(434).send('error retrieving info on group');
+    })
+    
+});
+
+// render single group info to page
+app.get('/group_info/:id', function(req, res) {
+    
+    let id = req.params.id;
+    
+    Groups.findOne({ where: { id: id } }).then(results => {
+        res.render('pages/group_info', { group: results });
+    }).catch(function (e) {
+        return 'no results'
+    })
+
+});
+
+// API update selected group 
+app.put('/api/update_group', function (req, res) {
+
+    let data = {
+
+        id: req.body.id,
+        name: req.body.name,
+        description: req.body.description,
+        category: req.body.category,
+        logo_link: req.body.logo_link
+
+    };
+
+    Groups.findOne({ where: { id: data.id } }).then(function (group) {
+        
+        group.update({
+
+            name: data.name,
+            description: data.description,
+            category: data.category,
+            logo_link: data.logo_link
+
+        }).then(function (newData) {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(newData));
+        }).catch(function (e) {
+            res.status(434).send('unable to update group')
+        })
+        
+    }).catch(function (e) {
+        res.status(434).send('unable to find group')
+    })
+    
+
+});
+
+// API delete selected group
+app.delete('/api/destroy_group', function (req, res) {
+
+    let data = {
+        id: req.body.id
+    };
+
+    Groups.destroy({ where: { id: data.id } }).then(function (group) {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(group));
+    }).catch(function (e) {
+        res.status(434).send('unable to delete group')
+    })
+
+});
+
+
+// API get users of selected group endpoint
+app.get('/api/users_in_group/:id', function(req, res) {
+    
+    let id =  req.params.id;
+    
+    Users.findAll({ where: { group_id: id } }).then(results => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(function (e) {
+        console.log(e);
+        res.status(434).send('error retrieving groups');
+    })
+    
 });
 
 app.get('/create_group', function (req, res) {
@@ -68,15 +184,6 @@ app.get('/create_activity', function(req, res) {
     res.render('pages/create_activity');
 });
 
-app.get('/group_info/:id', function(req, res) {
-    let id = req.params.id;
-    const group = Groups.findOne({ where: { id: id } }).then(results => {
-        res.render('pages/group_info', { group: results });
-    }).catch(function (e) {
-        return 'no results'
-    })
-});
-
 app.get('/login', function (req, res) {
     res.sendFile(__dirname + '/public/' + 'login.html');
 });
@@ -85,30 +192,23 @@ app.get('/register', function (req, res) {
     res.sendFile(__dirname + '/public/' + 'register.html');
 });
 
-app.get('/api/groups', function (req, res) {
-    Groups.findAll().then((results) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(results));
-    }).catch(function (e) {
-        console.log(e);
-        res.status(434).send('error retrieving groups');
-    })
-});
-
-// add a group to DB
+// API add a group to DB
 app.post('/api/groups', function (req, res) {
+    
     let data = {
         name: req.body.name,
         description: req.body.description,
         category: req.body.category,
         logo_link: req.body.logo_link
     };
+    
     Groups.create(data).then(function (group) {
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(group));
     }).catch(function (e) {
         res.status(434).send('unable to create group')
     })
+
 });
 
 app.get('/api/activities', function (req, res) {

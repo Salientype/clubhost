@@ -3,3 +3,6 @@ other_files
 .env
 .DS_Store
  
+node_modules
+.env
+other_files
