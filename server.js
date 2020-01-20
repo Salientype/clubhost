@@ -110,11 +110,13 @@ app.get('/group_info/:id', function(req, res) {
 app.put('/api/update_group', function (req, res) {
 
     let data = {
+
         id: req.body.id,
         name: req.body.name,
         description: req.body.description,
         category: req.body.category,
         logo_link: req.body.logo_link
+
     };
 
     Groups.findOne({ where: { id: data.id } }).then(function (group) {
@@ -140,7 +142,7 @@ app.put('/api/update_group', function (req, res) {
 
 });
 
-// API delete selected group 
+// API delete selected group
 app.delete('/api/destroy_group', function (req, res) {
 
     let data = {
