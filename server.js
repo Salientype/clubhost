@@ -307,26 +307,24 @@ app.put('/api/user/:id', function (req, res) {
 
 });
 
-app.post('/api/login', async function (req, res) {
+app.post('/api/login', function (req, res) {
     
     let email = req.body.email.toLowerCase().trim();
     let password = req.body.password.trim();
-    const dbEmail = await Users.findOne({ where: { email: email } });
     
-    if (dbEmail !== null) {
-        console.log(dbEmail);
-        await Users.findOne({ where: { email: email } }).then( results => {
-            bcrypt.compare(password, results.password_hash).then(function (matched) {
+    if (email && password) {
+        Users.findOne({ where: { email: email } }).then( results => {
+            bcrypt.compare(password, results.password_hash).then( matched => {
                 if (matched) {
-                    req.session.user = results.id;
-                    req.session.name = results.name;
+                    //req.session.user = results.id;
+                    //session.first_name = results.first_name;
                     res.setHeader('Content-Type', 'application/json');
                     res.end(JSON.stringify(results));
                 } else {
-                    res.status(434).send('Email/Password combination did not match')
+                    res.status(434).send(`${email}\password combination did not match`)
                 }
             }).catch((e) => {
-                res.status(434).send(`${email} does not exist in the database`)
+                res.status(434).send('bcrypt error')
             })
         }).catch((e) => {
             res.status(434).send('Email does not exist in the database')
