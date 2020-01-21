@@ -84,8 +84,12 @@ app.get('/api/group_info/:id', function(req, res) {
     let id = req.params.id;
     
     Groups.findOne({ where: { id: id } }).then(results => {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(JSON.stringify(results));
+        if (results) {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(results));
+        } else {
+            res.status(434).send('group does not exist is DB');
+        }
     }).catch(function (e) {
         console.log(e);
         res.status(434).send('error retrieving info on group');
@@ -235,17 +239,82 @@ app.post('/api/activities', function (req, res) {
     })
 });
 
-app.post('/api/login', function (req, res) {
+// API get single user's info
+app.get('/api/user/:id', function(req, res){
+
+    let id = req.params.id;
+    
+    Users.findOne({ where: { id: id } }).then(results => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(results));
+    }).catch(err => {
+        console.log(err);
+        res.status(434).send('error retrieving info on user')
+    });
+
+});
+
+// API update a single user's info
+app.put('/api/user/:id', function (req, res) {
+
+    let data = {
+
+        id: req.params.id,
+        first_name: req.body.first_name.trim(),
+        last_name: req.body.last_name.trim(),
+        email: req.body.email.toLowerCase().trim(),
+        password_hash: req.body.password.trim(),
+        gender: req.body.gender,
+        group_id: req.body.group_id,
+        is_admin: req.body.is_admin
+
+    };
+
+    Users.findOne({ where: { id: 3 } }).then(user => {
+        
+        if (data.password_hash != null) {
+
+            var salt = bcrypt.genSaltSync(10);
+            var hash = bcrypt.hashSync(data.password, salt);
+            data.password_hash = hash;
+    
+        }
+
+        user.update({
+
+            first_name: data.first_name,
+            last_name: data.last_name,
+            email: data.email,
+            password_hash: data.password_hash,
+            gender: req.body.gender,
+            group_id: req.body.group_id,
+            is_admin: req.body.is_admin
+
+        }).then(function (newData) {
+            res.setHeader('Content-Type', 'application/json');
+            res.end(JSON.stringify(newData));
+        }).catch(function (e) {
+            res.status(434).send('unable to update user')
+        })
+        
+    }).catch(function (e) {
+        console.log(e);
+        res.status(434).send(`unable to find user ${data.id}`)
+
+    })    
+
+});
+
+app.post('/api/login', async function (req, res) {
     
     let email = req.body.email.toLowerCase().trim();
-    let password = req.body.password;
-    if (email && password) {
-        Users.findOne({
-            where: {
-                email: email
-            },
-        }).then((results) => {
-            bcrypt.compare(password, results.password).then(function (matched) {
+    let password = req.body.password.trim();
+    const dbEmail = await Users.findOne({ where: { email: email } });
+    
+    if (dbEmail !== null) {
+        console.log(dbEmail);
+        await Users.findOne({ where: { email: email } }).then( results => {
+            bcrypt.compare(password, results.password_hash).then(function (matched) {
                 if (matched) {
                     req.session.user = results.id;
                     req.session.name = results.name;
@@ -254,7 +323,9 @@ app.post('/api/login', function (req, res) {
                 } else {
                     res.status(434).send('Email/Password combination did not match')
                 }
-            });
+            }).catch((e) => {
+                res.status(434).send(`${email} does not exist in the database`)
+            })
         }).catch((e) => {
             res.status(434).send('Email does not exist in the database')
         });
