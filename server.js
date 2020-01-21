@@ -84,12 +84,14 @@ app.get('/api/group_info/:id', function(req, res) {
     let id = req.params.id;
     
     Groups.findOne({ where: { id: id } }).then(results => {
+        
         if (results) {
             res.setHeader('Content-Type', 'application/json');
             res.end(JSON.stringify(results));
         } else {
             res.status(434).send('group does not exist is DB');
         }
+
     }).catch(function (e) {
         console.log(e);
         res.status(434).send('error retrieving info on group');
@@ -259,7 +261,7 @@ app.put('/api/user/:id', function (req, res) {
 
     let data = {
 
-        id: req.params.id,
+        id: req.params.id.toString(),
         first_name: req.body.first_name.trim(),
         last_name: req.body.last_name.trim(),
         email: req.body.email.toLowerCase().trim(),
@@ -270,12 +272,12 @@ app.put('/api/user/:id', function (req, res) {
 
     };
 
-    Users.findOne({ where: { id: 3 } }).then(user => {
+    Users.findOne({ where: { id: data.id } }).then( user => {
         
         if (data.password_hash != null) {
 
             var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(data.password, salt);
+            var hash = bcrypt.hashSync(data.password_hash, salt);
             data.password_hash = hash;
     
         }
