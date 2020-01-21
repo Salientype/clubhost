@@ -51,6 +51,15 @@ app.use(cookieParser());
 app.use(express.static('public'));
 app.set('view engine', 'ejs');
 
+app.use(session({
+    
+    secret: 'keyboard cat',
+    resave: false,
+    saveUninitialized: true,
+    cookie: { secure: true }
+    
+}))
+
 // res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
 
 // API get groups endpoint
@@ -316,7 +325,7 @@ app.post('/api/login', function (req, res) {
         Users.findOne({ where: { email: email } }).then( results => {
             bcrypt.compare(password, results.password_hash).then( matched => {
                 if (matched) {
-                    //req.session.user = results.id;
+                    req.session.user = results.id;
                     //session.first_name = results.first_name;
                     res.setHeader('Content-Type', 'application/json');
                     res.end(JSON.stringify(results));
