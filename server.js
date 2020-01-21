@@ -57,7 +57,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true,
     cookie: { secure: true }
-    
+
 }))
 
 // res.render('pages/users', {users: {firstName: "testfirstname", lastName: "test-last name", email: "req.session.email"}});
@@ -198,7 +198,15 @@ app.get('/create_activity', function(req, res) {
 });
 
 app.get('/login', function (req, res) {
-    res.sendFile(__dirname + '/public/' + 'login.html');
+    res.render('pages/login');
+});
+
+app.get('/users', function (req, res) {
+    if (req.session.user) {
+        res.render('pages/users', { users: req.session.user });
+    } else {
+        res.render('pages/register');
+    }
 });
 
 app.get('/register', function (req, res) {
@@ -330,7 +338,7 @@ app.post('/api/login', function (req, res) {
                     res.setHeader('Content-Type', 'application/json');
                     res.end(JSON.stringify(results));
                 } else {
-                    res.status(434).send(`${email}\password combination did not match`)
+                    res.status(434).send(`${email} and password combination did not match`)
                 }
             }).catch((e) => {
                 res.status(434).send('bcrypt error')
