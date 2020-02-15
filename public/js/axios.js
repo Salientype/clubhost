@@ -16,7 +16,11 @@ function apiRegister(data, successCallback, errorCallback) {
     .then(successCallback)
     .catch(errorCallback);
 }
-
+function apiLogin(data, successCallback, errorCallback) {
+  axios.post("http://localhost:3000/" + 'api/login', data)
+    .then(successCallback)
+    .catch(errorCallback);
+}
 function apiGetActivity() {
   return axios.get("http://localhost:3000/" + 'api/activities')
     .then((res) => res)

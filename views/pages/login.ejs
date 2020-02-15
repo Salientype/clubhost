@@ -13,6 +13,11 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="/css/signin.css" rel="stylesheet">
+
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="/js/axios.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/app.js"></script>
   </head>
 
 		<div class="logo">
@@ -25,8 +30,8 @@
 				<!-- Login Form -->
 				<form>
 					<input type="text" id="loginEmail" class="fadeIn second" name="login" placeholder="Email">
-					<input type="text" id="loginPassword" class="fadeIn third" name="login" placeholder="Password">
-					<input type="submit" class="fadeIn fourth" value="Log In" onclick="submitLogin(event)">
+					<input type="password" id="loginPassword" class="fadeIn third" name="login" placeholder="Password">
+					<input type="submit" class="fadeIn fourth" value="Log In" onsubmit="submitLogin(event)">
 				</form>
 	
 		
@@ -38,10 +43,10 @@
     function submitLogin(event) {
 				event.preventDefault();
 				
-        let email_input = $('#loginEmail').val();
+        let email_input =  document.getElementById('loginEmail').value;
         // let email_input = document.getElementById('inputEmail').val
 
-        let password_input = $('#loginPassword').val();
+        let password_input = document.getElementById('loginPassword').value
         // let password_input = document.getElementById('inputPassword').val
 
         let data = {
@@ -56,7 +61,7 @@
           window.localStorage.setItem("name", response.name);
 
           //Changes the html page
-          window.location = 'users.ejs';
+          window.location = '/users';
 
         }
 
@@ -65,7 +70,7 @@
           //document.elementById('errorMessage').innerHtml = response.responseText
         }
 
-        apiLogin(data, successCallback, failureCallback);
+        apiLogin(data, successCallback, errorCallback);
     }
   
   </script>

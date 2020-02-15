@@ -17,6 +17,11 @@ var session = require('express-session');
 var cookieParser = require('cookie-parser');
 
 const bcrypt = require('bcrypt');
+// const passport = require('passport');
+// var express = require('express')
+//   , http = require('http')
+//   , util = require('util')
+//   , LinkedInStrategy = require('passport-linkedin').Strategy;
 
 const Sequelize = require('sequelize')
 const GroupsModel = require('./models/groups')
@@ -205,12 +210,12 @@ app.get('/users', function (req, res) {
     if (req.session.user) {
         res.render('pages/users', { users: req.session.user });
     } else {
-        res.render('pages/register');
+        res.redirect('/register');
     }
 });
 
 app.get('/register', function (req, res) {
-    res.sendFile(__dirname + '/public/' + 'register.html');
+    res.render('pages/register');
 });
 
 // API add a group to DB
@@ -274,55 +279,55 @@ app.get('/api/user/:id', function(req, res){
 });
 
 // API update a single user's info
-app.put('/api/user/:id', function (req, res) {
+// app.put('/api/user/:id', function (req, res) {
 
-    let data = {
+//     let data = {
 
-        id: req.params.id.toString(),
-        first_name: req.body.first_name.trim(),
-        last_name: req.body.last_name.trim(),
-        email: req.body.email.toLowerCase().trim(),
-        password_hash: req.body.password.trim(),
-        gender: req.body.gender,
-        group_id: req.body.group_id,
-        is_admin: req.body.is_admin
+//         id: req.params.id.toString(),
+//         first_name: req.body.first_name.trim(),
+//         last_name: req.body.last_name.trim(),
+//         email: req.body.email.toLowerCase().trim(),
+//         password_hash: req.body.password.trim(),
+//         gender: req.body.gender,
+//         group_id: req.body.group_id,
+//         is_admin: req.body.is_admin
 
-    };
+//     };
 
-    Users.findOne({ where: { id: data.id } }).then( user => {
+//     Users.findOne({ where: { id: data.id } }).then( user => {
         
-        if (data.password_hash != null) {
+//         if (data.password_hash != null) {
 
-            var salt = bcrypt.genSaltSync(10);
-            var hash = bcrypt.hashSync(data.password_hash, salt);
-            data.password_hash = hash;
+//             var salt = bcrypt.genSaltSync(10);
+//             var hash = bcrypt.hashSync(data.password_hash, salt);
+//             data.password_hash = hash;
     
-        }
+//         }
 
-        user.update({
+//         user.update({
 
-            first_name: data.first_name,
-            last_name: data.last_name,
-            email: data.email,
-            password_hash: data.password_hash,
-            gender: req.body.gender,
-            group_id: req.body.group_id,
-            is_admin: req.body.is_admin
+//             first_name: data.first_name,
+//             last_name: data.last_name,
+//             email: data.email,
+//             password_hash: data.password_hash,
+//             gender: req.body.gender,
+//             group_id: req.body.group_id,
+//             is_admin: req.body.is_admin
 
-        }).then(function (newData) {
-            res.setHeader('Content-Type', 'application/json');
-            res.end(JSON.stringify(newData));
-        }).catch(function (e) {
-            res.status(434).send('unable to update user')
-        })
+//         }).then(function (newData) {
+//             res.setHeader('Content-Type', 'application/json');
+//             res.end(JSON.stringify(newData));
+//         }).catch(function (e) {
+//             res.status(434).send('unable to update user')
+//         })
         
-    }).catch(function (e) {
-        console.log(e);
-        res.status(434).send(`unable to find user ${data.id}`)
+//     }).catch(function (e) {
+//         console.log(e);
+//         res.status(434).send(`unable to find user ${data.id}`)
 
-    })    
+//     })    
 
-});
+// });
 
 app.post('/api/login', function (req, res) {
     
@@ -356,18 +361,18 @@ app.post('/api/register', function (req, res) {
     
     let data = {
         
-        first_name: req.body.first_name.trim(),
-        last_name: req.body.last_name.trim(),
+        firstName: req.body.first_name.trim(),
+        lastName: req.body.last_name.trim(),
         email: req.body.email.toLowerCase().trim(),
         password: req.body.password
 
     };
     
-    if (data.first_name && data.last_name && data.email && data.password) {
+    if (data.firstName && data.lastName && data.email && data.password) {
         
         var salt = bcrypt.genSaltSync(10);
         var hash = bcrypt.hashSync(data.password, salt);
-        data['password_hash'] = hash;
+        data['password'] = hash;
 
         Users.create(data).then(function (user) {
             res.setHeader('Content-Type', 'application/json');
@@ -381,6 +386,164 @@ app.post('/api/register', function (req, res) {
     }
 
 });
+
+//passport linkedin strategy
+
+// passport.use(new LinkedInStrategy({
+//     consumerKey: LINKEDIN_API_KEY,
+//     consumerSecret: LINKEDIN_SECRET_KEY,
+//     callbackURL: "http://127.0.0.1:3000/auth/linkedin/callback"
+//   },
+//   function(token, tokenSecret, profile, done) {
+//     User.findOrCreate({ linkedinId: profile.id }, function (err, user) {
+//       return done(err, user);
+//     });
+//   }
+// ));
+
+
+// app.get('/auth/linkedin',
+//   passport.authenticate('linkedin'));
+
+// app.get('/auth/linkedin/callback', 
+//   passport.authenticate('linkedin', { failureRedirect: '/login' }),
+//   function(req, res) {
+//     // Successful authentication, redirect home.
+//     res.redirect('/');
+//   });
+
+//   passport.use(new LinkedInStrategy({
+//     // clientID, clientSecret and callbackURL
+//     profileFields: ['id', 'first-name', 'last-name', 'email-address', 'headline']
+//   },
+//   // verify callback
+// ));
+// passport.serializeUser(function(user, done) {
+//     done(null, user);
+//   });
+  
+//   passport.deserializeUser(function(obj, done) {
+//     done(null, obj);
+//   });
+  
+  
+//   // Use the LinkedInStrategy within Passport.
+//   //   Strategies in passport require a `verify` function, which accept
+//   //   credentials (in this case, a token, tokenSecret, and LinkedIn profile), and
+//   //   invoke a callback with a user object.
+//   passport.use(new LinkedInStrategy({
+//       consumerKey: LINKEDIN_API_KEY,
+//       consumerSecret: LINKEDIN_SECRET_KEY,
+//       callbackURL: "http://127.0.0.1:3000/auth/linkedin/callback"
+//     },
+//     function(token, tokenSecret, profile, done) {
+//       // asynchronous verification, for effect...
+//       process.nextTick(function () {
+//         // To keep the example simple, the user's LinkedIn profile is returned to
+//         // represent the logged-in user.  In a typical application, you would want
+//         // to associate the LinkedIn account with a user record in your database,
+//         // and return that user instead.
+//         return done(null, profile);
+//       });
+//     }
+//   ));
+  
+//   app.get('/', function(req, res){
+//     res.render('index', { user: req.user });
+//   });
+  
+//   app.get('/account', ensureAuthenticated, function(req, res){
+//     res.render('account', { user: req.user });
+//   });
+  
+//   app.get('/login', function(req, res){
+//     res.render('login', { user: req.user });
+//   });
+  
+//   // GET /auth/linkedin
+//   //   Use passport.authenticate() as route middleware to authenticate the
+//   //   request.  The first step in LinkedIn authentication will involve
+//   //   redirecting the user to linkedin.com.  After authorization, LinkedIn will
+//   //   redirect the user back to this application at /auth/linkedin/callback
+// //   app.get('/auth/linkedin',
+// //     passport.authenticate('linkedin'),
+// //     function(req, res){
+// //       // The request will be redirected to LinkedIn for authentication, so this
+// //       // function will not be called.
+// //     });
+  
+// //   // GET /auth/linkedin/callback
+// //   //   Use passport.authenticate() as route middleware to authenticate the
+// //   //   request.  If authentication fails, the user will be redirected back to the
+// //   //   login page.  Otherwise, the primary route function function will be called,
+// //   //   which, in this example, will redirect the user to the home page.
+// //   app.get('/auth/linkedin/callback',
+// //     passport.authenticate('linkedin', { failureRedirect: '/login' }),
+// //     function(req, res) {
+// //       res.redirect('/');
+// //     });
+  
+// //   app.get('/logout', function(req, res){
+//     req.logout();
+//     res.redirect('/');
+//   });
+  
+//   http.createServer(app).listen(app.get('port'), function(){
+//     console.log('Express server listening on port ' + app.get('port'));
+//   });
+  
+  
+//   // Simple route middleware to ensure user is authenticated.
+//   //   Use this route middleware on any resource that needs to be protected.  If
+//   //   the request is authenticated (typically via a persistent login session),
+//   //   the request will proceed.  Otherwise, the user will be redirected to the
+//   //   login page.
+//   function ensureAuthenticated(req, res, next) {
+//     if (req.isAuthenticated()) { return next(); }
+//     res.redirect('/login');
+//   }
+
+
+
+
+
+
+
+// // var LinkedInStrategy = require('passport-linkedin-oauth2').Strategy;
+ 
+// // passport.use(new LinkedInStrategy({
+// //   clientID: LINKEDIN_KEY,
+// //   clientSecret: LINKEDIN_SECRET,
+// //   callbackURL: "http://127.0.0.1:3000/auth/linkedin/callback",
+// //   scope: ['r_emailaddress', 'r_liteprofile'],
+// // }, function(accessToken, refreshToken, profile, done) {
+// //   // asynchronous verification, for effect...
+// //   process.nextTick(function () {
+// //     // To keep the example simple, the user's LinkedIn profile is returned to
+// //     // represent the logged-in user. In a typical application, you would want
+// //     // to associate the LinkedIn account with a user record in your database,
+// //     // and return that user instead.
+// //     return done(null, profile);
+// //   });
+// // }));
+// // //authenticate
+// // app.get('/auth/linkedin',
+// //   passport.authenticate('linkedin', { state: 'SOME STATE'  }),
+// //   function(req, res){
+// //     // The request will be redirected to LinkedIn for authentication, so this
+// //     // function will not be called.
+// //   });
+// //   //login callback
+// //   app.get('/auth/linkedin/callback', passport.authenticate('linkedin', {
+// //     successRedirect: '/',
+// //     failureRedirect: '/login'
+// //   }));
+// // // //GET user first, last, and profile pic
+// // // GET https://api.linkedin.com/v2/me?projection=(id,firstName,lastName,profilePicture(displayImage~:playableStreams))
+// // // //GET email address
+// // // GET https://api.linkedin.com/v2/emailAddress?q=members&projection=(elements*(handle~))
+
+
 
 app.listen(3000);
 console.log('Clubs are listening');
